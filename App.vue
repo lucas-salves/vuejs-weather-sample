@@ -10,7 +10,7 @@
       
       <div class="location-box">
          <div class="location">{{ weather.name }}, {{ weather.sys.country }}</div> 
-        <div class="date">Monday 23 August 2020</div>        
+        <div class="date">{{ dateBuilder() }}</div>        
       </div>
     </div>
 
@@ -46,6 +46,19 @@ export default {
     },
     setResults(results){
       this.weather = results; 
+    },
+    dateBuilder(){
+      let dateObject = new Date();
+      let months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      let days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday",];
+
+      let day = days[dateObject.getDay()];
+      let date = dateObject.getDate();
+      let month = months[dateObject.getMonth()];
+      let year = dateObject.getFullYear();
+
+      return `${day} ${date} ${month} ${year}`;
+
     }
   }
 
