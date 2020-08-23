@@ -1,60 +1,146 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-      <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
+    <main>
+      <div class="search-box">
+        <input type="text"  class="search-bar" placeholder="Search" v-model="query" @keypress="fetchWeather"/>
+        
+      </div>
+    <div class="container" v-if="typeof weather.main != 'undefined'">
+    <div class="weather-wrap" >
+      
+      <div class="location-box">
+         <div class="location">{{ weather.name }}, {{ weather.sys.country }}</div> 
+        <div class="date">Monday 23 August 2020</div>        
+      </div>
+    </div>
+
+    <div class="weather-box">
+      <div class="temp">{{ Math.round( weather.main.temp ) }} ºC</div>
+      <div class="weather">{{ weather.weather[0].main }}</div>
+    </div>
+  </div>
+    </main>
   </div>
 </template>
 
 <script>
 export default {
   name: 'app',
-  data () {
+  data(){
     return {
-      msg: 'Welcome to Your Vue.js App'
+      api_key: '3f2fa65ed905f2d9f1758e845ea622b7',
+      url_base: 'http://api.openweathermap.org/data/2.5/',
+      query: '',
+      weather: {}
+
+    }
+  },
+  methods: {
+    fetchWeather(e){
+      if(e.key == "Enter"){
+        fetch(`${this.url_base}weather?q=${this.query}&units=metric&APPID=${this.api_key}`)
+          .then(res => {
+            return res.json();
+          }).then(this.setResults);
+      }
+    },
+    setResults(results){
+      this.weather = results; 
     }
   }
+
 }
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+    *{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'mont-serrat', sans-serif;
+    }
+    #app{
+      background-image: url('./assets/cold-bg.jpg');
+      background-size: cover;
+      background-position: bottom;
+      transition: .4s;
+    }
+    main {
+      min-height: 100vh;
+      padding: 25px;
+      background-image: linear-gradient(to bottom, rgba(0,0,0,0.25), rgba(0,0,0,0.75));
+    }
+    .search-box{
+      width: 100%;
+      margin-bottom: 30px;
+    }
+    .search-box .search-bar{
+      display: block;
+      width: 100%;
+      padding: 15px;
 
-h1, h2 {
-  font-weight: normal;
-}
+      color: #3131131;
+      font-size: 20px;
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
+      appearance: none;
+      border: none;
+      outline: none;
+      background: none;
 
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
+      box-shadow: 0px 0px 8px rgba(0,0,0,0.25);
+      background-color: rgba(255,255,255, 0.5);
+      border-radius: 0px 16px 0px 16px;
+      transition: .4s; 
+    }
 
-a {
-  color: #42b983;
-}
+    .search-box .search-bar:focus {
+      box-shadow: 0px 0px 16px rgba(0,0,0,0.25);
+      background-color: rgba(255,255,255,0.75);
+      border-radius: 16px 0px 16px 0px;
+    }
+
+    .location-box .location {
+      color: #FFF;
+      font-size: 32px;
+      font-weight: 500;
+      text-align: center;
+      text-shadow: 1px 3px rgba(0,0,0,0.25);
+    }
+
+    .location-box .date{
+      color: #FFF;
+      font-size: 20px;
+      font-weight: 300;
+      font-style: italic;
+      text-align: center;
+    }
+
+    .weather-box{
+      text-align: center;
+    }
+
+    .weather-box .temp{
+      display: inline-block;
+      padding:10px 25px;
+      color: #FFF;
+      font-size: 102px;
+      font-weight: 900;
+
+      text-shadow: 3px 6px rgba(0,0,0,0.25);
+      background-color: rgba(255,255,255,0.25);
+      border-radius: 16px;
+      margin: 30px 0px;
+
+      box-shadow: 3px 6px rgba(0,0,0,0.25);
+    }
+
+    .weather-box .weather{
+      color: #FFF;
+      font-size: 48px;
+      font-weight: 700;
+      font-style: italic;
+      text-shadow: 3px 6px rgba(0,0,0,0.25);
+    }
 </style>
